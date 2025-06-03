@@ -1,1 +1,27 @@
-# Atividade-Pontuada-
+# Atividade-Pontuada-// backend/server.js
+const express = require('express');
+const cors = require('cors');
+const mysql = require('mysql2');
+
+const app = express();
+app.use(cors());
+app.use(express.json());
+
+const db = mysql.createConnection({
+  host: 'localhost',
+  user: 'root',
+  password: '',      // tua senha
+  database: 'cardapio'
+});
+
+db.connect(err => {
+  if (err) throw err;
+  console.log('Conectado ao MySQL!');
+});
+
+app.get('/cardapio', (req, res) => {
+  db.query('SELECT * FROM itens', (err, result) => {
+    if (err) throw err;
+    res.json(result);
+  });
+})
