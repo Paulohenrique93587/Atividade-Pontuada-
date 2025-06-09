@@ -1,27 +1,81 @@
-// backend/server.js
-const express = require('express');
-const cors = require('cors');
-const mysql = require('mysql2');
+mport tkinter as tk
+from tkinter import ttk
+from tkinter import messagebox
 
-const app = express();
-app.use(cors());
-app.use(express.json());
+def cadastrar_prato():
+    nome = entry_nome.get()
+    descricao = entry_descricao.get("1.0", tk.END).strip()
+    preco = entry_preco.get()
+    categoria = combo_categoria.get()
+    disponibilidade = var_disponivel.get()
+    url_imagem = entry_url.get()
 
-const db = mysql.createConnection({
-  host: 'localhost',
-  user: 'root',
-  password: '',      // tua senha
-  database: 'cardapio'
-});
+    if not nome or not preco or not categoria or not url_imagem:
+        messagebox.showwarning("Campos incompletos", "Por favor, preencha todos os campos obrigatórios.")
+        return
 
-db.connect(err => {
-  if (err) throw err;
-  console.log('Conectado ao MySQL!');
-});
+    try:
+        preco_float = float(preco)
+    except ValueError:
+        messagebox.showerror("Erro", "Preço inválido. Digite um número válido.")
+        return
 
-app.get('/cardapio', (req, res) => {
-  db.query('SELECT * FROM itens', (err, result) => {
-    if (err) throw err;
-    res.json(result);
-  });
-})
+    # Aqui você pode salvar esses dados em um banco, arquivo ou processar como quiser
+    print("Cadastro realizado com sucesso!")
+    print(f"Nome: {nome}")
+    print(f"Descrição: {descricao}")
+    print(f"Preço: R$ {preco_float:.2f}")
+    print(f"Categoria: {categoria}")
+    print(f"Disponível: {'Sim' if disponibilidade else 'Não'}")
+    print(f"URL da Imagem: {url_imagem}")
+
+    messagebox.showinfo("Sucesso", "Prato cadastrado com sucesso!")
+
+    # Limpar os campos
+    entry_nome.delete(0, tk.END)
+    entry_descricao.delete("1.0", tk.END)
+    entry_preco.delete(0, tk.END)
+    combo_categoria.set('')
+    var_disponivel.set(False)
+    entry_url.delete(0, tk.END)
+
+# Criar janela principal
+root = tk.Tk()
+root.title("Cadastro de Prato")
+root.geometry("400x500")
+
+# Nome do prato
+tk.Label(root, text="Nome do prato *").pack(anchor='w', padx=10, pady=(10,0))
+entry_nome = tk.Entry(root)
+entry_nome.pack(fill='x', padx=10)
+
+# Descrição
+tk.Label(root, text="Descrição").pack(anchor='w', padx=10, pady=(10,0))
+entry_descricao = tk.Text(root, height=5)
+entry_descricao.pack(fill='x', padx=10)
+
+# Preço
+tk.Label(root, text="Preço (R$) *").pack(anchor='w', padx=10, pady=(10,0))
+entry_preco = tk.Entry(root)
+entry_preco.pack(fill='x', padx=10)
+
+# Categoria
+tk.Label(root, text="Categoria *").pack(anchor='w', padx=10, pady=(10,0))
+combo_categoria = ttk.Combobox(root, values=["Entrada", "Prato Principal", "Sobremesa", "Bebida"])
+combo_categoria.pack(fill='x', padx=10)
+
+# Disponibilidade
+var_disponivel = tk.BooleanVar()
+check_disponivel = tk.Checkbutton(root, text="Disponível", variable=var_disponivel)
+check_disponivel.pack(anchor='w', padx=10, pady=(10,0))
+
+# URL da imagem
+tk.Label(root, text="URL da imagem *").pack(anchor='w', padx=10, pady=(10,0))
+entry_url = tk.Entry(root)
+entry_url.pack(fill='x', padx=10)
+
+# Botão de cadastrar
+btn_cadastrar = tk.Button(root, text="Cadastrar Prato", command=cadastrar_prato)
+btn_cadastrar.pack(pady=20)
+
+root.mainloop()
