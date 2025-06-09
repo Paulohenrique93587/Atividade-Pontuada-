@@ -1,0 +1,85 @@
+import tkinter as tk
+from tkinter import ttk
+
+class TelaListagemPratos(tk.Tk):
+    def __init__(self, pratos):
+        super().__init__()
+
+        self.title("Listagem de Pratos")
+        self.geometry("700x400")
+        self.resizable(False, False)
+
+        self.pratos = pratos
+
+        self.criar_widgets()
+
+    def criar_widgets(self):
+        # Título
+        tk.Label(self, text="Pratos Cadastrados", font=("Arial", 16, "bold")).pack(pady=15)
+
+        # Criar Treeview (tabela)
+        colunas = ("nome", "descricao", "preco", "categoria", "disponivel", "url_imagem")
+        self.tree = ttk.Treeview(self, columns=colunas, show="headings")
+
+        # Definir cabeçalhos
+        self.tree.heading("nome", text="Nome")
+        self.tree.heading("descricao", text="Descrição")
+        self.tree.heading("preco", text="Preço (R$)")
+        self.tree.heading("categoria", text="Categoria")
+        self.tree.heading("disponivel", text="Disponível")
+        self.tree.heading("url_imagem", text="URL da Imagem")
+
+        # Definir largura das colunas
+        self.tree.column("nome", width=150)
+        self.tree.column("descricao", width=200)
+        self.tree.column("preco", width=80, anchor='center')
+        self.tree.column("categoria", width=120, anchor='center')
+        self.tree.column("disponivel", width=80, anchor='center')
+        self.tree.column("url_imagem", width=200)
+
+        self.tree.pack(fill='both', expand=True, padx=10, pady=10)
+
+        # Popular a tabela com os pratos
+        for prato in self.pratos:
+            disponivel_texto = "Sim" if prato['disponivel'] else "Não"
+            preco_formatado = f"R$ {prato['preco']:.2f}"
+            self.tree.insert("", tk.END, values=(
+                prato['nome'],
+                prato['descricao'],
+                preco_formatado,
+                prato['categoria'],
+                disponivel_texto,
+                prato['url_imagem']
+            ))
+
+if __name__ == "__main__":
+    # Exemplo de pratos cadastrados
+    pratos_exemplo = [
+        {
+            "nome": "Lasanha",
+            "descricao": "Lasanha de carne com molho branco",
+            "preco": 25.50,
+            "categoria": "Prato Principal",
+            "disponivel": True,
+            "url_imagem": "http://exemplo.com/lasanha.jpg"
+        },
+        {
+            "nome": "Brigadeiro",
+            "descricao": "Doce de chocolate típico brasileiro",
+            "preco": 5.00,
+            "categoria": "Sobremesa",
+            "disponivel": True,
+            "url_imagem": "http://exemplo.com/brigadeiro.jpg"
+        },
+        {
+            "nome": "Suco de Laranja",
+            "descricao": "Suco natural de laranja",
+            "preco": 7.00,
+            "categoria": "Bebida",
+            "disponivel": False,
+            "url_imagem": "http://exemplo.com/suco.jpg"
+        }
+    ]
+
+    app = TelaListagemPratos(pratos_exemplo)
+    app.mainloop()
